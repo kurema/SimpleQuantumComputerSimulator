@@ -1,4 +1,4 @@
-﻿require "math.pl";
+require "math.pl";
 use Encode 'encode';
 
 print texTemplateQC($ARGV[0]);
@@ -12,7 +12,7 @@ HEAD
 	
 	my $m=<<MIDDLE;
 
-\\subsection{状態遷移}
+\\subsection{��ԑJ��}
 
 MIDDLE
 
@@ -26,7 +26,7 @@ TAIL
 sub texTemplateQCMap{
 	my $fn=$_[0];
 	my $h=<<H;
-\\subsection{量子回路図}
+\\subsection{�ʎq��H�}}
 
 \\setlength{\\unitlength}{1.0mm}
 \\begin{picture}(100, 50)(0,0)
@@ -39,32 +39,32 @@ T
 	}
 
 
-#量子コンピュータアセンブリを実行。
+#�ʎq�R���s���[�^�A�Z���u�������s�B
 sub execQC{
 	my @arg=@_;
 	my $s=$arg[0];
 	my @l=();
-	#@lはラインの初期状態リスト。
+	#@l�̓��C���̏�����ԃ��X�g�B
 	my %n=();
-	#@lはラインの番号のハッシュ。
+	#@l�̓��C���̔ԍ��̃n�b�V���B
 	my $a=0;
-	#$aは実行中のステップ
+	#$a�͎��s���̃X�e�b�v
 	my @k=();
-	#@kはラインの状態。長さ2の配列のリスト。
+	#@k�̓��C���̏�ԁB����2�̔z��̃��X�g�B
 	my @h=();
-	#@hはラインの状態の組み合わせの値。(|000>の状態,|001>の状態,|010>…)の値。
+	#@h�̓��C���̏�Ԃ̑g�ݍ��킹�̒l�B(|000>�̏��,|001>�̏��,|010>�c)�̒l�B
 	my @e;
-	#@eはエンタングルメントの状態リスト。表示用。エンタングルの無いラインは未定義、あるラインは1。
+	#@e�̓G���^���O�������g�̏�ԃ��X�g�B�\���p�B�G���^���O���̖������C���͖���`�A���郉�C����1�B
 	my ($t0,$t1);
-	#$t0はUNDEFの定義。$t1は結果。texのテキスト。
+	#$t0��UNDEF�̒�`�B$t1�͌��ʁBtex�̃e�L�X�g�B
 	my @q=();
-	#@qは場合分け毎のラインの状態の組み合わせ値のリスト。
+	#@q�͏ꍇ�������̃��C���̏�Ԃ̑g�ݍ��킹�l�̃��X�g�B
 	my $l=0;
-	#$lは量子ライン数。
+	#$l�͗ʎq���C�����B
 	my @w=();
-	#@wは古典ラインの番号のハッシュ。
+	#@w�͌ÓT���C���̔ԍ��̃n�b�V���B
 	my $w=0;
-	#$wは古典ラインの本数のカウント。
+	#$w�͌ÓT���C���̖{���̃J�E���g�B
 	
 	my $i=0;
 	$s=~ s/\r//g;
@@ -73,7 +73,7 @@ sub execQC{
 	$s=~ s/^\n//mg;
 	$l=@l;
 	
-	#初期状態の展開
+	#������Ԃ̓W�J
 	my $j=0;
 	for(my $i=0;$i<@l;$i++){
 		my @a;
@@ -88,7 +88,7 @@ sub execQC{
 		$k[$i]=\@a;
 		}
 	
-	#それをさらに展開。
+	#���������ɓW�J�B
 	for(my $i=0;$i<(2**(0+@l));$i++){
 		my $a="1";
 		for(my $j=0;$j<@l;$j++){
@@ -98,7 +98,7 @@ sub execQC{
 		}
 	$q[0]=\@h;
 	
-	#ゲート用行列
+	#�Q�[�g�p�s��
 	my %g;
 	$s=~ s/^SET (\S) (\-?\d+) (\-?\d+) (\-?\d+) (\-?\d+)$/my @x=([$2,$3],[$4,$5]);$g{$1}=\@x;$i++;""/meg;
 	$s=~ s/^\n//mg;
@@ -111,19 +111,19 @@ sub execQC{
 	my @x=([1,1],[1,-1]);
 	$g{"H"}=\@x;
 	
-	#実行部
+	#���s��
 	my @s=split(/\n/,$s);
 	for(my $i=0;$i<@s;$i++){
 		$t1.=execQCStateMultiCase(\@q,$l,$i,$w);
 		my @d=split(/ /,$s[$i]);
 		if($d[0] =~/^(\w)GATE$/){
-			#ゲート通過
+			#�Q�[�g�ʉ�
 			my $gn=$1;
 			my @gt=@{$g{$gn}};
 			for(my $k=0;$k<@q;$k++){
 				my @h=@{$q[$k]};
 				my @y=@h;
-				#下不要？
+				#���s�v�H
 				if($e[$n{$d[1]}]!=1){@{$a[$n{$d[1]}]}=matrixMul($g{$gn},$a[$n{$d[1]}]);}
 				for(my $j=0;$j<@h;$j++){
 					$y[$j]=formulaAddTex(
@@ -139,7 +139,7 @@ sub execQC{
 				$q[$k]=\@y;
 				}
 			}elsif($d[0] eq "BFE"){
-			#ビットフリップエラー
+			#�r�b�g�t���b�v�G���[
 			my $gn=$1;
 			my @gt=@{$g{$gn}};
 			for(my $k=0;$k<@q;$k++){
@@ -152,7 +152,7 @@ sub execQC{
 				$q[$k]=\@y;
 				}
 			}elsif($d[0] eq "IFE"){
-			#位相フリップエラー
+			#�ʑ��t���b�v�G���[
 			my $gn=$1;
 			my @gt=@{$g{$gn}};
 			for(my $k=0;$k<@q;$k++){
@@ -165,7 +165,7 @@ sub execQC{
 				$q[$k]=\@y;
 				}
 			}elsif($d[0] eq "OBS"){
-			#観測時の振る舞い。
+			#�ϑ����̐U�镑���B
 			my @s;
 			for(my $k=0;$k<@q;$k++){
 				my @h=@{$q[$k]};
@@ -192,7 +192,7 @@ sub execQC{
 			%n=%nn;
 			@q=@s;
 			}elsif($d[0] eq "CNOT"){
-			#CNOT通過時の振る舞い。
+			#CNOT�ʉߎ��̐U�镑���B
 			for(my $k=0;$k<@q;$k++){
 				my @h=@{$q[$k]};
 				my @y=@h;
@@ -208,8 +208,8 @@ sub execQC{
 				$q[$k]=\@y;
 				}
 			}elsif($d[0]=~ /^C(\w)GATE$/){
-			#コントロールユニタリゲート通過時
-			#正常機能せず
+			#�R���g���[�����j�^���Q�[�g�ʉߎ�
+			#����@�\����
 			for(my $k=0;$k<@q;$k++){
 				my @h=@{$q[$k]};
 				my @y=@h;
@@ -217,8 +217,8 @@ sub execQC{
 				my @gt=@{$g{$gn}};
 				if($e[$n{$d[1]}]!=1){@{$a[$n{$d[1]}]}=matrixMul($g{$gn},$a[$n{$d[1]}]);}
 				for(my $j=0;$j<@h;$j++){
-					#$h[$j](|$j>の係数)=ry;
-					#int($j/(2**$d[1]))%2は$jの二進表示での$d[1]桁目。
+					#$h[$j](|$j>�̌W��)=ry;
+					#int($j/(2**$d[1]))%2��$j�̓�i�\���ł�$d[1]���ځB
 					if(int($j/(2**$n{$d[1]}))%2 == 1){$y[$j]=formulaAddTex(formulaExpandTex($gt[int($j/(2**$n{$d[2]}))%2][0],$h[int($j/(2**($n{$d[2]}+1)))+$j%(2**$n{$d[2]})]),formulaExpandTex($gt[int($j/(2**$n{$d[2]}))%2][1],$h[int($j/(2**($n{$d[2]}+1)))+$j%(2**$n{$d[2]})+(2**$n{$d[2]})]))};
 					}
 				
@@ -227,7 +227,7 @@ sub execQC{
 				$q[$k]=\@y;
 				}
 			}elsif($d[0] eq "AND"){
-			#古典量子ビットに対しAND演算を行うものです。古典ビットの用意が必要です。
+			#�ÓT�ʎq�r�b�g�ɑ΂�AND���Z���s�����̂ł��B�ÓT�r�b�g�̗p�ӂ��K�v�ł��B
 			my @p=@q;
 			for(my $k=0;$k<@q;$k++){
 				if(int($k/(2**$w{$d[2]}))%2 ==1 and int($k/(2**$w{$d[3]}))%3 ==1){
@@ -237,7 +237,7 @@ sub execQC{
 					}
 				}
 			}elsif($d[0] eq "OR"){
-			#古典量子ビットに対しOR演算を行うものです。古典ビットの用意が必要です。
+			#�ÓT�ʎq�r�b�g�ɑ΂�OR���Z���s�����̂ł��B�ÓT�r�b�g�̗p�ӂ��K�v�ł��B
 			my @p=@q;
 			for(my $k=0;$k<@q;$k++){
 				if(int($k/(2**$w{$d[2]}))%2 ==1 or int($k/(2**$w{$d[3]}))%3 ==1){
@@ -247,7 +247,7 @@ sub execQC{
 					}
 				}
 			}elsif($d[0] eq "NOT"){
-			#古典量子ビットに対しNOT演算を行うものです。古典ビットの用意が必要です。
+			#�ÓT�ʎq�r�b�g�ɑ΂�NOT���Z���s�����̂ł��B�ÓT�r�b�g�̗p�ӂ��K�v�ł��B
 			my @p=@q;
 			for(my $k=0;$k<@q;$k++){
 				if(int($k/(2**$w{$d[2]}))%2 ==0){
@@ -257,7 +257,7 @@ sub execQC{
 					}
 				}
 			}elsif($d[0]=~ /^CC(\w)GATE$/){
-			#古典コントロールユニタリゲート通過時
+			#�ÓT�R���g���[�����j�^���Q�[�g�ʉߎ�
 			for(my $k=0;$k<@q;$k++){
 				my @h=@{$q[$k]};
 				my @y=@h;
@@ -267,8 +267,8 @@ sub execQC{
 					my @gt=@{$g{$gn}};
 					if($e[$n{$d[2]}]!=1){@{$a[$n{$d[2]}]}=matrixMul($g{$gn},$a[$n{$d[2]}]);}
 					for(my $j=0;$j<@h;$j++){
-						#$h[$j](|$j>の係数)=ry;
-						#int($j/(2**$d[1]))%2は$jの二進表示での$d[1]桁目。
+						#$h[$j](|$j>�̌W��)=ry;
+						#int($j/(2**$d[1]))%2��$j�̓�i�\���ł�$d[1]���ځB
 						$y[$j]=formulaAddTex(
 							formulaExpandTex(
 								$gt[int($j/(2**$n{$d[2]}))%2][0],
@@ -286,10 +286,10 @@ sub execQC{
 				}
 			$e[$n{$d[2]}]=1;
 			}
-		#TODO:エンタングルメントを考慮
+		#TODO:�G���^���O�������g���l��
 		}
 	$t1.=execQCStateMultiCase(\@q,$l,0+@s,$w);
-	return "\n\\subsubsection{状態の定義}\n".$t0."\n\\subsubsection{状態遷移}\n".$t1;
+	return "\n\\subsubsection{��Ԃ̒�`}\n".$t0."\n\\subsubsection{��ԑJ��}\n".$t1;
 	}
 
 sub execQCStateMultiCase{
@@ -299,7 +299,7 @@ sub execQCStateMultiCase{
 	my $w=$_[3];
 	my $t="";
 	if(0+@q==1){
-		if($i==0){$t="初期状態\n\\begin{equation}\n".execQCState($q[0],$a)."\n\\end{equation}\n\n";}
+		if($i==0){$t="�������\n\\begin{equation}\n".execQCState($q[0],$a)."\n\\end{equation}\n\n";}
 		else{$t="\\begin{equation}\n\\left|\\Psi_{".($i)."}\\right>=".execQCState($q[0],$a)."\n\\end{equation}\n\n";}
 	}else{
 		$t.="\\begin{equation}\n\\left|\\Psi_{".($i)."}\\right>=\\left(\n\\begin{array}{lc}\n";
@@ -342,17 +342,17 @@ sub drawQCMap{
 	my @arg=@_;
 	my $s=$arg[0];
 	my @l=();
-	#@lはラインの初期状態リスト。
+	#@l�̓��C���̏�����ԃ��X�g�B
 	my %n=();
-	#@lはラインの番号のハッシュ。
+	#@l�̓��C���̔ԍ��̃n�b�V���B
 	my @b;
-	#@bはラインの命令リストのリスト。
+	#@b�̓��C���̖��߃��X�g�̃��X�g�B
 	my @c;
-	#@cは最新のそのラインの状態。Qは量子ライン、Nはラインなし、Cは古典ゲート。
+	#@c�͍ŐV�̂��̃��C���̏�ԁBQ�͗ʎq���C���AN�̓��C���Ȃ��AC�͌ÓT�Q�[�g�B
 	my $c="";
-	#$cはコネクション相当のtex文字列。
+	#$c�̓R�l�N�V����������tex������B
 	my $t="";
-	#$tはゲート相当のtex文字列。
+	#$t�̓Q�[�g������tex������B
 	my $a=0;
 	
 	$s=~ s/\r//g;
@@ -398,7 +398,7 @@ sub drawQCMap{
 	}
 
 sub drawQCMapInitStat{
-	#初期状態リストを表示
+	#������ԃ��X�g��\��
 	my @s=@{$_[0]};
 	my $t="";
 	my $height=$_[1];
@@ -416,13 +416,13 @@ sub drawQCMapInitStat{
 	}
 
 sub drawQCMapStatList{
-	#下の遷移図を表示。引数は(状態遷移の数,開始x座標,開始y座標,幅)。
+	#���̑J�ڐ}��\���B������(��ԑJ�ڂ̐�,�J�nx���W,�J�ny���W,��)�B
 	my @a=@_;
 	my $t="";
 	for(my $i=1;$i<=$a[0];$i++){
 		$t.="\\put(".($a[1]+$a[3]*$i).",".($a[2])."){\$\\left|\\Psi_{$i}\\right>\$}\n";
 		$t.="\\put(".($a[1]+$a[3]*$i).", ".($a[2]+6)."){\\vector(0, 1){7}}\n"
-		#ここ怪しい
+		#����������
 		}
 	return $t;
 	}
@@ -447,8 +447,8 @@ sub drawQCMapSetB{
 sub drawQCConnection{
 	my ($type,$x0,$y0,$y1)=@_;
 	my $y;
-	#引数は(結合タイプ,結合元X座標,同Y,結合先Y座標)
-	#結合タイプはCNOT:CNOT,U:ユニタリゲート,U0:古典制御ユニタリゲート,U1:古典制御ユニタリゲート(元が分岐していない)
+	#������(�����^�C�v,������X���W,��Y,������Y���W)
+	#�����^�C�v��CNOT:CNOT,U:���j�^���Q�[�g,U0:�ÓT���䃆�j�^���Q�[�g,U1:�ÓT���䃆�j�^���Q�[�g(�������򂵂Ă��Ȃ�)
 	$r="";
 	my $t=0;
 	my $d=1;
@@ -538,9 +538,9 @@ UNIT
 	my @list=@{$arg[0]};
 	my $x=$arg[1];
 	my $y=$arg[2];
-	#引数は(\\@描画命令のリスト,開始X座標,開始Y座標)
-	#描画命令は、CNOT:CNOTゲート,GATE(X);ユニタリゲート(ex.Xが"H"ならアダマールゲート),
-	#01GATE:古典ゲート,QLINE:量子線,QLINEEND:量子線終端,LINE:古典線,LINEEND:古典線終端,その他:描画なし
+	#������(\\@�`�施�߂̃��X�g,�J�nX���W,�J�nY���W)
+	#�`�施�߂́ACNOT:CNOT�Q�[�g,GATE(X);���j�^���Q�[�g(ex.X��"H"�Ȃ�A�_�}�[���Q�[�g),
+	#01GATE:�ÓT�Q�[�g,QLINE:�ʎq��,QLINEEND:�ʎq���I�[,LINE:�ÓT��,LINEEND:�ÓT���I�[,���̑�:�`��Ȃ�
 	
 	my $width=10;
 	$x+=$width/2;
@@ -614,7 +614,7 @@ sub simpleCalc{
 	return $text;
 	}
 
-#標準関数
+#�W���֐�
 sub loadFile{
 	local(@temp);
 	open DATA,$_[0];
