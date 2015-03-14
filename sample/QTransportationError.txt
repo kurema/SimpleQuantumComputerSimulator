@@ -1,0 +1,13 @@
+#量子テレポーテーション(非正常動作)です。
+DEF BOB 0
+DEF 1 1
+DEF 0 UNDEF
+
+HGATE 1
+CNOT 1 BOB
+CNOT 0 1
+HGATE 0
+
+OBS 0
+OBS 1
+
